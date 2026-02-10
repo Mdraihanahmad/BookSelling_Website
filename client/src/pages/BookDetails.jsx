@@ -34,7 +34,7 @@ export default function BookDetails() {
   const thumbnailSrc = useMemo(() => {
     if (!book?.thumbnailUrl) return '';
     if (/^https?:\/\//i.test(book.thumbnailUrl)) return book.thumbnailUrl;
-    return `${import.meta.env.VITE_API_BASE_URL}${book.thumbnailUrl}`;
+    return `${import.meta.env.VITE_API_BASE_URL || ''}${book.thumbnailUrl}`;
   }, [book]);
 
   useEffect(() => {

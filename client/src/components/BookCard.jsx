@@ -21,7 +21,7 @@ export default function BookCard({ book }) {
   const thumbnailSrc = book?.thumbnailUrl
     ? /^https?:\/\//i.test(book.thumbnailUrl)
       ? book.thumbnailUrl
-      : `${import.meta.env.VITE_API_BASE_URL}${book.thumbnailUrl}`
+      : `${import.meta.env.VITE_API_BASE_URL || ''}${book.thumbnailUrl}`
     : '';
 
   return (

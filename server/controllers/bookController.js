@@ -238,7 +238,7 @@ async function streamBookPdf(req, res, next) {
 
     // Local disk mode: book.pdfUrl is like /uploads/pdfs/<file>
     const relative = String(book.pdfUrl || '').replace(/^\//, '');
-    const filePath = path.resolve(relative);
+    const filePath = path.resolve(__dirname, '..', relative);
 
     if (!fs.existsSync(filePath)) {
       return res.status(404).json({ message: 'PDF file not found on server' });

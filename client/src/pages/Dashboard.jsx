@@ -176,7 +176,7 @@ export default function Dashboard() {
       </div>
 
       {error && (
-        <div className="mt-6 rounded-2xl border border-red-200/70 bg-red-50 p-4 text-sm text-red-700 shadow-sm">
+        <div className="mt-6 rounded-2xl border border-rose-200/60 bg-rose-50 p-4 text-sm text-rose-700">
           {error}
         </div>
       )}
@@ -212,7 +212,7 @@ export default function Dashboard() {
               const thumbnailSrc = book?.thumbnailUrl
                 ? /^https?:\/\//i.test(book.thumbnailUrl)
                   ? book.thumbnailUrl
-                  : `${import.meta.env.VITE_API_BASE_URL}${book.thumbnailUrl}`
+                  : `${import.meta.env.VITE_API_BASE_URL || ''}${book.thumbnailUrl}`
                 : '';
 
               return (

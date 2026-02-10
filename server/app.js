@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
+const path = require('path');
 
 const authRoutes = require('./routes/authRoutes');
 const bookRoutes = require('./routes/bookRoutes');
@@ -17,7 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 
 // Static: thumbnails are public
-app.use('/uploads/thumbnails', express.static('uploads/thumbnails'));
+app.use('/uploads/thumbnails', express.static(path.join(__dirname, 'uploads', 'thumbnails')));
 
 // Health check
 app.get('/api/health', (req, res) => {
