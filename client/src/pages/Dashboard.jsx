@@ -78,6 +78,10 @@ export default function Dashboard() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  const assetBaseUrl = useMemo(() => {
+    return import.meta.env.PROD ? '' : import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+  }, []);
   const [toast, setToast] = useState('');
 
   const purchased = useMemo(
@@ -177,7 +181,7 @@ export default function Dashboard() {
 
       {error && (
         <div className="mt-6 rounded-2xl border border-rose-200/60 bg-rose-50 p-4 text-sm text-rose-700">
-          {error}
+                      : `${assetBaseUrl}${book.thumbnailUrl}`
         </div>
       )}
 

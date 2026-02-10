@@ -25,6 +25,10 @@ export default function BookDetails() {
   const { user, reload } = useAuth();
   const navigate = useNavigate();
 
+  const assetBaseUrl = useMemo(() => {
+    return import.meta.env.PROD ? '' : import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+  }, []);
+
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -34,8 +38,8 @@ export default function BookDetails() {
   const thumbnailSrc = useMemo(() => {
     if (!book?.thumbnailUrl) return '';
     if (/^https?:\/\//i.test(book.thumbnailUrl)) return book.thumbnailUrl;
-    return `${import.meta.env.VITE_API_BASE_URL || ''}${book.thumbnailUrl}`;
-  }, [book]);
+    return `${assetBaseUrl}${book.thumbnailUrl}`;
+  }, [assetBaseUrl, book]);
 
   const shareUrl = useMemo(() => {
     if (typeof window === 'undefined') return '';

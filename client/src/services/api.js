@@ -1,7 +1,11 @@
 import axios from 'axios';
 
+const devBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? 'http://localhost:5000' : ''),
+  // In the single-project Vercel deployment, the API is same-origin in production.
+  // Ignore VITE_API_BASE_URL in PROD to avoid misconfig (e.g., accidentally set to localhost).
+  baseURL: import.meta.env.PROD ? '' : devBaseUrl,
 });
 
 export function setAuthToken(token) {

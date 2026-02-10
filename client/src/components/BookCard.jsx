@@ -23,10 +23,14 @@ export function BookCardSkeleton() {
 export default function BookCard({ book }) {
   const [shareStatus, setShareStatus] = useState('');
 
+  const assetBaseUrl = useMemo(() => {
+    return import.meta.env.PROD ? '' : import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+  }, []);
+
   const thumbnailSrc = book?.thumbnailUrl
     ? /^https?:\/\//i.test(book.thumbnailUrl)
       ? book.thumbnailUrl
-      : `${import.meta.env.VITE_API_BASE_URL || ''}${book.thumbnailUrl}`
+      : `${assetBaseUrl}${book.thumbnailUrl}`
     : '';
 
   const shareUrl = useMemo(() => {
