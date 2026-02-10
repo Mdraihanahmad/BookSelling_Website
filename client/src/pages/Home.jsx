@@ -6,6 +6,7 @@ export default function Home() {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [query, setQuery] = useState('');
 
   useEffect(() => {
     let mounted = true;
@@ -25,6 +26,15 @@ export default function Home() {
       mounted = false;
     };
   }, []);
+
+  const normalizedQuery = query.trim().toLowerCase();
+  const filteredBooks = !normalizedQuery
+    ? books
+    : books.filter((b) => {
+        const title = String(b?.title || '').toLowerCase();
+        const description = String(b?.description || '').toLowerCase();
+        return title.includes(normalizedQuery) || description.includes(normalizedQuery);
+      });
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:py-10">
@@ -53,8 +63,22 @@ export default function Home() {
             <p className="mt-1 text-sm text-slate-600">Click a book to view details and buy.</p>
           </div>
           <div className="hidden text-sm text-slate-500 sm:block">
-            {!loading && !error ? `${books.length} item${books.length === 1 ? '' : 's'}` : ''}
+            {!loading && !error ? `${filteredBooks.length} item${filteredBooks.length === 1 ? '' : 's'}` : ''}
           </div>
+        </div>
+
+        <div className="mt-4">
+          <label className="sr-only" htmlFor="book-search">
+            Search books
+          </label>
+          <input
+            id="book-search"
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search by title or description…"
+            className="w-full rounded-2xl border border-slate-200/70 bg-white/80 px-4 py-3 text-sm text-slate-900 shadow-sm outline-none placeholder:text-slate-400 focus:border-indigo-300 focus:ring-2 focus:ring-indigo-200"
+          />
         </div>
 
         <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -67,7 +91,7 @@ export default function Home() {
             </>
           )}
 
-          {!loading && !error && books.map((b) => <BookCard key={b._id} book={b} />)}
+          {!loading && !error && filteredBooks.map((b) => <BookCard key={b._id} book={b} />)}
 
           {!loading && !error && books.length === 0 && (
             <div className="sm:col-span-2 lg:col-span-3">
@@ -77,6 +101,15 @@ export default function Home() {
                 </div>
                 <div className="mt-4 text-sm font-semibold text-slate-900">No books yet</div>
                 <div className="mt-1 text-sm text-slate-600">Please check back soon.</div>
+              </div>
+            </div>
+          )}
+
+          {!loading && !error && books.length > 0 && filteredBooks.length === 0 && (
+            <div className="sm:col-span-2 lg:col-span-3">
+              <div className="rounded-3xl border border-slate-200/70 bg-white/80 p-8 text-center shadow-sm">
+                <div className="mt-1 text-sm font-semibold text-slate-900">No matches</div>
+                <div className="mt-1 text-sm text-slate-600">Try a different search term.</div>
               </div>
             </div>
           )}

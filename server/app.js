@@ -41,7 +41,9 @@ app.get('/api/health', (req, res) => {
 });
 
 // Routes
-app.use('/api/auth', authRoutes);
+// Note: On Vercel, /api/auth/* may conflict with platform auth/protection routes.
+// Use a different prefix for app auth endpoints.
+app.use('/api/account', authRoutes);
 app.use('/api/books', bookRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/orders', orderRoutes);
