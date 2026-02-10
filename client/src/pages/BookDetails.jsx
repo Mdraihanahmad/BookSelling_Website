@@ -37,6 +37,11 @@ export default function BookDetails() {
     return `${import.meta.env.VITE_API_BASE_URL || ''}${book.thumbnailUrl}`;
   }, [book]);
 
+  const shareUrl = useMemo(() => {
+    if (typeof window === 'undefined') return '';
+    return `${window.location.origin}/s/${id}`;
+  }, [id]);
+
   useEffect(() => {
     let mounted = true;
     async function load() {
@@ -116,6 +121,34 @@ export default function BookDetails() {
       setMessage(status ? `${status}: ${serverMsg || fallback}` : serverMsg || fallback);
     } finally {
       setPaying(false);
+    }
+  }
+
+  async function handleShare() {
+    if (!shareUrl) return;
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: book?.title || 'Sellb',
+          text: 'Check out this book on Sellb',
+          url: shareUrl,
+        });
+        return;
+      }
+
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(shareUrl);
+        setMessage('Share link copied to clipboard.');
+        return;
+      }
+
+      // Fallback for older browsers / insecure contexts
+      window.prompt('Copy this link:', shareUrl);
+    } catch (e) {
+      // If user cancels native share sheet, do nothing
+      if (e?.name === 'AbortError') return;
+      setMessage('Failed to share link. Please try again.');
     }
   }
 
@@ -273,6 +306,20 @@ export default function BookDetails() {
               className="mt-5 inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/60 focus-visible:ring-offset-2 disabled:opacity-60"
             >
               {paying ? 'Processing…' : 'Buy now'}
+            </button>
+
+            <button
+              onClick={handleShare}
+              type="button"
+              className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/40 focus-visible:ring-offset-2"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4 text-slate-700">
+                <path
+                  fill="currentColor"
+                  d="M18 16.1c-.8 0-1.6.3-2.1.9l-7.1-4.1c.1-.3.2-.6.2-.9s-.1-.6-.2-.9l7-4.1c.6.6 1.3 1 2.2 1 1.7 0 3-1.3 3-3s-1.3-3-3-3-3 1.3-3 3c0 .3.1.6.2.9l-7 4.1c-.6-.6-1.4-1-2.2-1-1.7 0-3 1.3-3 3s1.3 3 3 3c.8 0 1.6-.3 2.2-.9l7.1 4.1c-.1.2-.1.5-.1.7 0 1.7 1.3 3 3 3s3-1.3 3-3-1.3-3-3-3Z"
+                />
+              </svg>
+              Share
             </button>
 
             {!user && (

@@ -10,6 +10,10 @@
   },
   "rewrites": [
     {
+      "source": "/s/(.*)",
+      "destination": "/api/share/book/$1"
+    },
+    {
       "source": "/((?!api).*)",
       "destination": "/index.html"
     }
