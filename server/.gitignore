@@ -9,3 +9,4 @@ uploads/thumbnails/*
 uploads/pdfs/*
 !uploads/thumbnails/.gitkeep
 !uploads/pdfs/.gitkeep
+.vercel
