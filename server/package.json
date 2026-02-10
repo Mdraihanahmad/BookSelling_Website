@@ -4,6 +4,9 @@
   "description": "Backend for Online Book Selling & Reading Website",
   "main": "server.js",
   "type": "commonjs",
+  "engines": {
+    "node": ">=20 <23"
+  },
   "scripts": {
     "dev": "nodemon server.js",
     "start": "node server.js",
