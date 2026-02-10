@@ -2,12 +2,12 @@ const mongoose = require('mongoose');
 
 /**
  * Connect to MongoDB using Mongoose.
- * Reads connection string from process.env.MONGO_URI
+ * Reads connection string from process.env.MONGO_URI (preferred) or process.env.MONGODB_URI.
  */
 async function connectDB() {
-  const mongoUri = process.env.MONGO_URI;
+  const mongoUri = process.env.MONGO_URI || process.env.MONGODB_URI;
   if (!mongoUri) {
-    throw new Error('MONGO_URI is missing in environment variables');
+    throw new Error('MongoDB connection string is missing. Set MONGO_URI (or MONGODB_URI).');
   }
 
   mongoose.set('strictQuery', true);
