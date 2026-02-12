@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import api from '../services/api';
+import api, { getApiBaseUrl } from '../services/api';
 
 function StatusBadge({ status }) {
   const normalized = String(status || '').toLowerCase();
@@ -80,7 +80,7 @@ export default function Dashboard() {
   const [error, setError] = useState('');
 
   const assetBaseUrl = useMemo(() => {
-    return import.meta.env.PROD ? '' : import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+    return getApiBaseUrl();
   }, []);
   const [toast, setToast] = useState('');
 
@@ -181,7 +181,7 @@ export default function Dashboard() {
 
       {error && (
         <div className="mt-6 rounded-2xl border border-rose-200/60 bg-rose-50 p-4 text-sm text-rose-700">
-                      : `${assetBaseUrl}${book.thumbnailUrl}`
+          {error}
         </div>
       )}
 
@@ -216,7 +216,7 @@ export default function Dashboard() {
               const thumbnailSrc = book?.thumbnailUrl
                 ? /^https?:\/\//i.test(book.thumbnailUrl)
                   ? book.thumbnailUrl
-                  : `${import.meta.env.VITE_API_BASE_URL || ''}${book.thumbnailUrl}`
+                  : `${assetBaseUrl}${book.thumbnailUrl}`
                 : '';
 
               return (

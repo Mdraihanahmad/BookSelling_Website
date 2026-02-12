@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { getApiBaseUrl } from '../services/api';
 
 export function BookCardSkeleton() {
   return (
@@ -24,7 +25,7 @@ export default function BookCard({ book }) {
   const [shareStatus, setShareStatus] = useState('');
 
   const assetBaseUrl = useMemo(() => {
-    return import.meta.env.PROD ? '' : import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+    return getApiBaseUrl();
   }, []);
 
   const thumbnailSrc = book?.thumbnailUrl

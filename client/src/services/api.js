@@ -1,12 +1,29 @@
 import axios from 'axios';
 
-const devBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+function normalizeBaseUrl(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+  return raw.replace(/\/+$/, '');
+}
+
+function looksLikeLocalhost(value) {
+  return /^(https?:\/\/)?(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/i.test(String(value || '').trim());
+}
+
+const envBaseUrl = normalizeBaseUrl(import.meta.env.VITE_API_BASE_URL);
+const devBaseUrl = envBaseUrl || 'http://localhost:5000';
+
+// Production default is same-origin (''). If you're deploying frontend and backend separately,
+// set VITE_API_BASE_URL to your backend URL (NOT localhost).
+const prodBaseUrl = envBaseUrl && !looksLikeLocalhost(envBaseUrl) ? envBaseUrl : '';
 
 const api = axios.create({
-  // In the single-project Vercel deployment, the API is same-origin in production.
-  // Ignore VITE_API_BASE_URL in PROD to avoid misconfig (e.g., accidentally set to localhost).
-  baseURL: import.meta.env.PROD ? '' : devBaseUrl,
+  baseURL: import.meta.env.PROD ? prodBaseUrl : devBaseUrl,
 });
+
+export function getApiBaseUrl() {
+  return api.defaults.baseURL || '';
+}
 
 export function setAuthToken(token) {
   if (token) {

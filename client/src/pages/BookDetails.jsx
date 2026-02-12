@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import api from '../services/api';
+import api, { getApiBaseUrl } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { loadRazorpayScript } from '../utils/loadRazorpay';
 
@@ -26,7 +26,7 @@ export default function BookDetails() {
   const navigate = useNavigate();
 
   const assetBaseUrl = useMemo(() => {
-    return import.meta.env.PROD ? '' : import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+    return getApiBaseUrl();
   }, []);
 
   const [book, setBook] = useState(null);
