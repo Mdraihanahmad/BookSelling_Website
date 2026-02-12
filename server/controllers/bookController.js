@@ -11,6 +11,10 @@ function usingBlobStorage() {
   return Boolean(process.env.BLOB_READ_WRITE_TOKEN) || String(process.env.USE_BLOB_STORAGE || '').toLowerCase() === 'true';
 }
 
+function runningOnVercel() {
+  return Boolean(process.env.VERCEL) || Boolean(process.env.VERCEL_ENV);
+}
+
 function safePathPart(originalName) {
   const ext = path.extname(originalName || '').toLowerCase();
   const base = path
@@ -85,6 +89,12 @@ async function createBook(req, res, next) {
     let thumbnailPath;
     let pdfPath;
 
+    if (runningOnVercel() && !usingBlobStorage()) {
+      return res.status(500).json({
+        message: 'Uploads are not configured for production. Connect Vercel Blob and set BLOB_READ_WRITE_TOKEN (or set USE_BLOB_STORAGE=true with a valid token).',
+      });
+    }
+
     if (usingBlobStorage()) {
       if (!thumbnailFile.buffer || !pdfFile.buffer) {
         return res.status(400).json({ message: 'Upload failed: missing file buffers (blob storage mode)' });
@@ -134,6 +144,12 @@ async function updateBook(req, res, next) {
     const book = await Book.findById(req.params.id);
     if (!book) {
       return res.status(404).json({ message: 'Book not found' });
+    }
+
+    if (runningOnVercel() && !usingBlobStorage() && (req.files?.thumbnail?.[0] || req.files?.pdf?.[0])) {
+      return res.status(500).json({
+        message: 'Uploads are not configured for production. Connect Vercel Blob and set BLOB_READ_WRITE_TOKEN (or set USE_BLOB_STORAGE=true with a valid token).',
+      });
     }
 
     const { title, description, price } = req.body;

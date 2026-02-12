@@ -10,6 +10,10 @@
   },
   "rewrites": [
     {
+      "source": "/uploads/thumbnails/(.*)",
+      "destination": "/api/uploads/thumbnails/$1"
+    },
+    {
       "source": "/s/(.*)",
       "destination": "/api/share/book/$1"
     },

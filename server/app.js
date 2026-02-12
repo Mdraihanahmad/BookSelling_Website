@@ -20,6 +20,8 @@ app.use(morgan('dev'));
 
 // Static: thumbnails are public
 app.use('/uploads/thumbnails', express.static(path.join(__dirname, 'uploads', 'thumbnails')));
+// Vercel: /uploads/* is rewritten to /api/uploads/* (see root vercel.json)
+app.use('/api/uploads/thumbnails', express.static(path.join(__dirname, 'uploads', 'thumbnails')));
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -31,12 +33,27 @@ app.get('/api/health', (req, res) => {
     3: 'disconnecting',
   };
 
+  const hasMongo = Boolean(process.env.MONGO_URI || process.env.MONGODB_URI);
+  const hasJwt = Boolean(process.env.JWT_SECRET);
+  const hasRazorpay = Boolean(process.env.RAZORPAY_KEY_ID) && Boolean(process.env.RAZORPAY_KEY_SECRET);
+  const hasBlob = Boolean(process.env.BLOB_READ_WRITE_TOKEN) || String(process.env.USE_BLOB_STORAGE || '').toLowerCase() === 'true';
+
   res.json({
     ok: true,
     service: 'sellb-server',
     timestamp: new Date().toISOString(),
+    runtime: {
+      vercel: Boolean(process.env.VERCEL),
+      nodeEnv: process.env.NODE_ENV || 'unknown',
+    },
     db: {
       state: stateMap[readyState] || 'unknown',
+    },
+    config: {
+      hasMongo,
+      hasJwt,
+      hasRazorpay,
+      hasBlob,
     },
   });
 });
