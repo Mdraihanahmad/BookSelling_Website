@@ -10,7 +10,8 @@
   "scripts": {
     "dev": "nodemon server.js",
     "start": "node server.js",
-    "make-admin": "node scripts/makeAdmin.js"
+    "make-admin": "node scripts/makeAdmin.js",
+    "migrate-uploads-to-blob": "node scripts/migrateUploadsToBlob.js"
   },
   "keywords": [],
   "author": "",

@@ -52,7 +52,7 @@ async function main() {
     try {
       if (needsThumb) {
         const rel = String(book.thumbnailUrl).replace(/^\//, '');
-        const localPath = path.resolve(rel);
+        const localPath = path.resolve(__dirname, '..', rel);
         if (!fs.existsSync(localPath)) {
           console.warn(`  Thumbnail missing: ${localPath}`);
           missingFiles += 1;
@@ -71,7 +71,7 @@ async function main() {
 
       if (needsPdf) {
         const rel = String(book.pdfUrl).replace(/^\//, '');
-        const localPath = path.resolve(rel);
+        const localPath = path.resolve(__dirname, '..', rel);
         if (!fs.existsSync(localPath)) {
           console.warn(`  PDF missing: ${localPath}`);
           missingFiles += 1;
